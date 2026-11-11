@@ -1,0 +1,21 @@
+name: hpl_field_app
+description: True Native Offline Android App for HPL Infra Field Force
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  geolocator: ^10.1.0
+  image_picker: ^1.0.4
+  sqflite: ^2.3.0
+  path_provider: ^2.1.1
+  shared_preferences: ^2.2.2
+  intl: ^0.18.1
+
+flutter:
+  uses-material-design: true
