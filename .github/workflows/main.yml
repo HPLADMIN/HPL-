@@ -1,21 +1,41 @@
 name: Build Release APK
 on: [push, workflow_dispatch]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
+
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.x'
           channel: 'stable'
-      - run: flutter pub get
-      - run: flutter build apk --release
-      - uses: actions/upload-artifact@v4
+
+      - name: Auto-Generate Android Project & Build APK
+        run: |
+          # 1. Cloud me fresh Flutter project banayega
+          flutter create --org com.hplinfra hpl_field_app
+          cd hpl_field_app
+
+          # 2. Plugins add karega
+          flutter pub add http geolocator image_picker sqflite path_provider shared_preferences intl
+
+          # 3. Files ko sahi folder me set karega
+          mkdir -p lib/services
+          cp ../main.dart lib/main.dart
+          cp ../db_helper.dart lib/services/db_helper.dart
+          cp ../AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+
+          # 4. Release APK compile karega
+          flutter build apk --release --no-tree-shake-icons
+
+      - name: Upload Finished APK
+        uses: actions/upload-artifact@v4
         with:
-          name: HPL-Field-Native-App
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: HPL-Field-App-APK
+          path: hpl_field_app/build/app/outputs/flutter-apk/app-release.apk
